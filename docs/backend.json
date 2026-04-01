@@ -1,0 +1,817 @@
+{
+  "entities": {
+    "User": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "User",
+      "type": "object",
+      "description": "Represents a user profile within the mobile store application, including personal details, address, roles, and preferences.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the User entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The full name of the user."
+        },
+        "email": {
+          "type": "string",
+          "description": "The email address of the user.",
+          "format": "email"
+        },
+        "phone": {
+          "type": "string",
+          "description": "The phone number of the user."
+        },
+        "avatarUrl": {
+          "type": "string",
+          "description": "URL to the user's profile avatar image.",
+          "format": "uri"
+        },
+        "address": {
+          "type": "array",
+          "description": "A list of address maps for the user.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "role": {
+          "type": "string",
+          "description": "The role of the user, e.g., 'user' or 'admin'.",
+          "format": "enum"
+        },
+        "favoriteProductIds": {
+          "type": "array",
+          "description": "Array of product IDs that the user has marked as favorites. (Relationship: User N:N Product)",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the user account was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "email",
+        "role",
+        "createdAt"
+      ]
+    },
+    "Address": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Address",
+      "type": "object",
+      "description": "Represents a physical address for a user or for shipping.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Address entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who owns this address. (Relationship: User 1:N Address)"
+        },
+        "street": {
+          "type": "string",
+          "description": "The street name and number."
+        },
+        "city": {
+          "type": "string",
+          "description": "The city of the address."
+        },
+        "district": {
+          "type": "string",
+          "description": "The district or neighborhood of the address."
+        },
+        "building": {
+          "type": "string",
+          "description": "The building name or number."
+        },
+        "floor": {
+          "type": "string",
+          "description": "The floor or apartment number."
+        },
+        "isDefault": {
+          "type": "boolean",
+          "description": "Indicates if this is the user's default address."
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "street",
+        "city",
+        "district"
+      ]
+    },
+    "Product": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Product",
+      "type": "object",
+      "description": "Represents a mobile phone product available in the store.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Product entity."
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the mobile phone product."
+        },
+        "brand": {
+          "type": "string",
+          "description": "The brand of the product (e.g., Samsung, Apple, Xiaomi)."
+        },
+        "price": {
+          "type": "number",
+          "description": "The current selling price of the product."
+        },
+        "discount": {
+          "type": "number",
+          "description": "The percentage discount applied to the product, if any."
+        },
+        "oldPrice": {
+          "type": "number",
+          "description": "The original price of the product before any discount."
+        },
+        "description": {
+          "type": "string",
+          "description": "A detailed description of the product."
+        },
+        "specifications": {
+          "type": "array",
+          "description": "A list of specification maps for the product.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "An array of URLs for all product images.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "mainImageUrl": {
+          "type": "string",
+          "description": "The URL for the primary display image of the product.",
+          "format": "uri"
+        },
+        "stock": {
+          "type": "number",
+          "description": "The current number of units in stock."
+        },
+        "rating": {
+          "type": "number",
+          "description": "The average rating of the product based on user reviews."
+        },
+        "reviewsCount": {
+          "type": "number",
+          "description": "The total number of reviews submitted for the product."
+        },
+        "category": {
+          "type": "string",
+          "description": "The category of the product (e.g., 'flagship', 'mid-range', 'budget')."
+        },
+        "featured": {
+          "type": "boolean",
+          "description": "Indicates if the product is featured on the homepage or in promotions."
+        },
+        "tags": {
+          "type": "array",
+          "description": "An array of tags associated with the product for filtering or search.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the product was added to the catalog.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the product information was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "brand",
+        "price",
+        "mainImageUrl",
+        "stock",
+        "createdAt"
+      ]
+    },
+    "ProductSpecification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "ProductSpecification",
+      "type": "object",
+      "description": "Details the technical specifications for a mobile phone product.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the ProductSpecification entity."
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the Product this specification belongs to. (Relationship: Product 1:N ProductSpecification)"
+        },
+        "ram": {
+          "type": "string",
+          "description": "RAM capacity of the phone (e.g., '6GB', '8GB')."
+        },
+        "storage": {
+          "type": "string",
+          "description": "Internal storage capacity of the phone (e.g., '128GB', '256GB')."
+        },
+        "camera": {
+          "type": "string",
+          "description": "Camera specifications (e.g., '50MP + 12MP')."
+        },
+        "battery": {
+          "type": "string",
+          "description": "Battery capacity (e.g., '5000mAh')."
+        },
+        "processor": {
+          "type": "string",
+          "description": "Processor model."
+        },
+        "screen": {
+          "type": "string",
+          "description": "Screen size and type (e.g., '6.7 inch AMOLED')."
+        },
+        "os": {
+          "type": "string",
+          "description": "Operating system version (e.g., 'Android 14')."
+        },
+        "colors": {
+          "type": "array",
+          "description": "Available colors for this product variation.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warranty": {
+          "type": "string",
+          "description": "Warranty period (e.g., '12 months')."
+        }
+      },
+      "required": [
+        "id",
+        "productId"
+      ]
+    },
+    "Review": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Review",
+      "type": "object",
+      "description": "Represents a user's review and rating for a product.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Review entity."
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the Product being reviewed. (Relationship: Product 1:N Review)"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who submitted the review. (Relationship: User 1:N Review)"
+        },
+        "userName": {
+          "type": "string",
+          "description": "The name of the user who submitted the review (denormalized for display)."
+        },
+        "userAvatarUrl": {
+          "type": "string",
+          "description": "URL to the avatar image of the user who submitted the review (denormalized for display).",
+          "format": "uri"
+        },
+        "rating": {
+          "type": "number",
+          "description": "The rating given by the user (1-5 stars)."
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the review."
+        },
+        "comment": {
+          "type": "string",
+          "description": "The detailed comment or body of the review."
+        },
+        "imageUrls": {
+          "type": "array",
+          "description": "An array of URLs for images uploaded by the user with the review.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "likes": {
+          "type": "number",
+          "description": "The number of likes this review has received."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the review was created.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the review was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "productId",
+        "userId",
+        "userName",
+        "rating",
+        "comment",
+        "createdAt"
+      ]
+    },
+    "Cart": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Cart",
+      "type": "object",
+      "description": "Represents a user's shopping cart, containing a list of selected products.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Cart entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who owns this cart. (Relationship: User 1:1 Cart)"
+        },
+        "items": {
+          "type": "array",
+          "description": "An array of items currently in the cart, including product details and quantity.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "totalPrice": {
+          "type": "number",
+          "description": "The total price of all items in the cart."
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the cart was last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "items",
+        "totalPrice",
+        "updatedAt"
+      ]
+    },
+    "CartItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "CartItem",
+      "type": "object",
+      "description": "Represents a single product item within a user's shopping cart.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the CartItem entity."
+        },
+        "cartId": {
+          "type": "string",
+          "description": "Reference to the Cart this item belongs to. (Relationship: Cart 1:N CartItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the Product this item represents. (Relationship: Product 1:N CartItem)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product at the time it was added to the cart."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The URL of the product's main image at the time it was added to the cart.",
+          "format": "uri"
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the product at the time it was added to the cart."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of this product in the cart."
+        },
+        "selectedColor": {
+          "type": "string",
+          "description": "The selected color option for the product."
+        },
+        "selectedStorage": {
+          "type": "string",
+          "description": "The selected storage option for the product."
+        }
+      },
+      "required": [
+        "id",
+        "cartId",
+        "productId",
+        "name",
+        "imageUrl",
+        "price",
+        "quantity"
+      ]
+    },
+    "Order": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Order",
+      "type": "object",
+      "description": "Represents a completed or pending order placed by a user.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Order entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who placed the order. (Relationship: User 1:N Order)"
+        },
+        "items": {
+          "type": "array",
+          "description": "An array of items included in this order, with snapshot details at time of purchase.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "totalAmount": {
+          "type": "number",
+          "description": "The total monetary amount of the order, including taxes and shipping."
+        },
+        "shippingAddress": {
+          "type": "array",
+          "description": "A list of shipping address maps for the order.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "paymentMethod": {
+          "type": "string",
+          "description": "The method used for payment (e.g., 'cash', 'credit', 'wallet')."
+        },
+        "status": {
+          "type": "string",
+          "description": "The current status of the order (e.g., 'pending', 'confirmed', 'shipped', 'delivered', 'cancelled')."
+        },
+        "trackingNumber": {
+          "type": "string",
+          "description": "The tracking number for the shipment."
+        },
+        "estimatedDelivery": {
+          "type": "string",
+          "description": "The estimated date and time for delivery.",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the order was placed.",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Timestamp when the order status or details were last updated.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "items",
+        "totalAmount",
+        "paymentMethod",
+        "status",
+        "createdAt"
+      ]
+    },
+    "OrderItem": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "OrderItem",
+      "type": "object",
+      "description": "Represents a single product item that is part of an order.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the OrderItem entity."
+        },
+        "orderId": {
+          "type": "string",
+          "description": "Reference to the Order this item belongs to. (Relationship: Order 1:N OrderItem)"
+        },
+        "productId": {
+          "type": "string",
+          "description": "Reference to the Product this item represents. (Relationship: Product 1:N OrderItem)"
+        },
+        "name": {
+          "type": "string",
+          "description": "The name of the product at the time the order was placed."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "The URL of the product's main image at the time the order was placed.",
+          "format": "uri"
+        },
+        "price": {
+          "type": "number",
+          "description": "The price of the product at the time the order was placed."
+        },
+        "quantity": {
+          "type": "number",
+          "description": "The quantity of this product in the order."
+        },
+        "selectedColor": {
+          "type": "string",
+          "description": "The selected color option for the product at the time of order."
+        },
+        "selectedStorage": {
+          "type": "string",
+          "description": "The selected storage option for the product at the time of order."
+        }
+      },
+      "required": [
+        "id",
+        "orderId",
+        "productId",
+        "name",
+        "imageUrl",
+        "price",
+        "quantity"
+      ]
+    },
+    "Banner": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Banner",
+      "type": "object",
+      "description": "Represents a promotional banner displayed in the application, often linked to products or categories.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Banner entity."
+        },
+        "title": {
+          "type": "string",
+          "description": "The main title text of the banner."
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "A secondary subtitle or descriptive text for the banner."
+        },
+        "imageUrl": {
+          "type": "string",
+          "description": "URL of the image displayed on the banner.",
+          "format": "uri"
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of action or content the banner links to (e.g., 'product', 'category', 'url').",
+          "format": "enum"
+        },
+        "targetId": {
+          "type": "string",
+          "description": "The ID of the target product or category, or a URL, depending on the banner type."
+        },
+        "order": {
+          "type": "number",
+          "description": "The display order of the banner, if multiple banners are shown."
+        },
+        "active": {
+          "type": "boolean",
+          "description": "Indicates if the banner is currently active and should be displayed."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the banner was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "imageUrl",
+        "type",
+        "active",
+        "createdAt"
+      ]
+    },
+    "Notification": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Notification",
+      "type": "object",
+      "description": "Represents a notification sent to a specific user, informing them about order updates, offers, or system messages.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique identifier for the Notification entity."
+        },
+        "userId": {
+          "type": "string",
+          "description": "Reference to the User who receives this notification. (Relationship: User 1:N Notification)"
+        },
+        "title": {
+          "type": "string",
+          "description": "The title of the notification."
+        },
+        "body": {
+          "type": "string",
+          "description": "The main body text of the notification."
+        },
+        "type": {
+          "type": "string",
+          "description": "The type of notification (e.g., 'order', 'offer', 'system').",
+          "format": "enum"
+        },
+        "data": {
+          "type": "array",
+          "description": "A map containing additional structured data related to the notification, e.g., orderId for an 'order' type."
+        },
+        "read": {
+          "type": "boolean",
+          "description": "Indicates if the user has read the notification."
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when the notification was created.",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "id",
+        "userId",
+        "title",
+        "body",
+        "type",
+        "read",
+        "createdAt"
+      ]
+    }
+  },
+  "auth": {
+    "providers": [
+      "password",
+      "anonymous"
+    ]
+  },
+  "firestore": {
+    "structure": [
+      {
+        "path": "/users/{userId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "Stores user profiles. Each user's document ID is their Firebase Authentication UID. Includes a denormalized 'address' map for the primary address. The 'role' field exists for general information, but for admin authorization, the /admin_roles collection is used. Access is restricted to the owning user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user (Firebase Authentication UID)."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/admin_roles/{adminId}",
+        "definition": {
+          "entityName": "User",
+          "schema": {
+            "$ref": "#/backend/entities/User"
+          },
+          "description": "A dedicated collection for storing the UIDs of administrator users. The document ID is the 'adminId' (Firebase Authentication UID). This collection is used for authorization independence to perform atomic 'exists()' checks in security rules to determine if a user has admin privileges. Writing to this collection is restricted to backend services.",
+          "params": [
+            {
+              "name": "adminId",
+              "description": "The unique identifier of an administrator user (Firebase Authentication UID)."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/products/{productId}",
+        "definition": {
+          "entityName": "Product",
+          "schema": {
+            "$ref": "#/backend/entities/Product"
+          },
+          "description": "Contains details for all mobile phone products available in the store. Includes embedded 'specifications' map, 'images' array of URLs, and 'mainImage' URL. Read access is public for all users; write access is restricted to administrators.",
+          "params": [
+            {
+              "name": "productId",
+              "description": "The unique identifier for a product."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/reviews/{reviewId}",
+        "definition": {
+          "entityName": "Review",
+          "schema": {
+            "$ref": "#/backend/entities/Review"
+          },
+          "description": "Stores user reviews and ratings for products. Includes denormalized 'userName' and 'userAvatarUrl' for display. Read access is public; authenticated users can create their own reviews, and update/delete only their own reviews.",
+          "params": [
+            {
+              "name": "reviewId",
+              "description": "The unique identifier for a product review."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/cart",
+        "definition": {
+          "entityName": "Cart",
+          "schema": {
+            "$ref": "#/backend/entities/Cart"
+          },
+          "description": "Represents a single shopping cart document for each user. The document ID is 'cart'. It contains an embedded 'items' array of maps, where each map is a snapshot of product details (like price, name, selected options) at the time it was added. Access is restricted to the owning user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who owns this cart."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/orders/{orderId}",
+        "definition": {
+          "entityName": "Order",
+          "schema": {
+            "$ref": "#/backend/entities/Order"
+          },
+          "description": "Stores a user's placed orders. Each order document includes an embedded 'items' array of maps (snapshot of product details at time of purchase) and a 'shippingAddress' map (snapshot of the address). Read access is restricted to the owning user; create access is for the owning user, and update access is for administrators.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user who placed this order."
+            },
+            {
+              "name": "orderId",
+              "description": "The unique identifier for a specific order."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/banners/{bannerId}",
+        "definition": {
+          "entityName": "Banner",
+          "schema": {
+            "$ref": "#/backend/entities/Banner"
+          },
+          "description": "Contains promotional banners displayed across the application. Read access is public for all users; write access is restricted to administrators.",
+          "params": [
+            {
+              "name": "bannerId",
+              "description": "The unique identifier for a banner."
+            }
+          ]
+        }
+      },
+      {
+        "path": "/users/{userId}/notifications/{notificationId}",
+        "definition": {
+          "entityName": "Notification",
+          "schema": {
+            "$ref": "#/backend/entities/Notification"
+          },
+          "description": "Stores notifications specific to each user. Includes a 'data' map for additional context. Access (read/write to mark as read) is restricted to the owning user.",
+          "params": [
+            {
+              "name": "userId",
+              "description": "The unique identifier of the user receiving the notification."
+            },
+            {
+              "name": "notificationId",
+              "description": "The unique identifier for a specific notification."
+            }
+          ]
+        }
+      }
+    ],
+    "reasoning": "The recommended Firestore structure prioritizes secure, scalable, and debuggable design by adhering to core principles.\n\n**Authorization Independence (CRITICAL):**\n\nThe most significant change to ensure Authorization Independence is the handling of administrator roles. The user's original security rules relied on a `get()` call to the `users` collection to determine if `request.auth.uid` has `role == 'admin'`. This creates a hierarchical dependency, violating Authorization Independence and hindering atomic operations.\n\nTo resolve this, a new collection, `/admin_roles/{adminId}`, is introduced. An administrator's UID will be the document ID in this collection. Security rules for admin-only operations (like writing to `products` or `banners`, or updating `orders`) will now use an `exists()` check: `exists(/databases/$(database)/documents/admin_roles/$(request.auth.uid))`. This makes admin authorization checks atomic, independent, and significantly improves debuggability and performance by avoiding document reads during rule evaluation.\n\nFor user-owned data (e.g., cart, orders, notifications), the structure leverages path-based ownership (e.g., `/users/{userId}/cart`). This inherently ties authorization to the document's location, making rules simple and independent of other document reads within the same request. Data within documents (like `resource.data.userId` for flat collections like `reviews`) is also used for atomic ownership checks.\n\n**QAPs (Rules are not Filters):**\n\n1.  **Structural Segregation:** Collections are designed to have a homogeneous security posture.\n    *   `/products` and `/banners` are top-level collections with public read access. This allows unauthenticated users to browse products and view promotions, and enables efficient `list` queries for all users without security rules needing to filter results.\n    *   `/reviews` is also a top-level collection with public read access, allowing users to view all product reviews. Write access is restricted to authenticated users creating their own reviews, maintaining a clear security boundary.\n\n2.  **Hierarchical Paths for User-Owned Data:** For entities that are directly owned by a user (Cart, Orders, Notifications), a subcollection pattern is used:\n    *   `/users/{userId}/cart`: A single document for each user's cart. A `list` operation on this (conceptually) would only return the single cart document belonging to the authenticated user, satisfying QAPs.\n    *   `/users/{userId}/orders/{orderId}`: All orders for a specific user are stored under their `userId` path. `list` queries for `/users/{userId}/orders` will naturally only return the current user's orders, preventing accidental data exposure and simplifying rules.\n    *   `/users/{userId}/notifications/{notificationId}`: Similarly, notifications are private to the user, and `list` operations are implicitly scoped to the user's path.\n\n**Other Principles:**\n\n*   **DBAC (No Custom Claims):** User roles are stored in the database (`/admin_roles/{adminId}` collection) rather than relying on custom authentication claims. Authorization relies solely on `request.auth.uid` and database data.\n*   **Data Clarity and Predictability:** The structure explicitly models product specifications, cart items, and order items as embedded maps/arrays within their parent documents, providing a clear snapshot of data at the time of creation (e.g., product price in an order item).\n*   **Radical Consistency:** Consistent naming (`userId`, `productId`, `createdAt`, `updatedAt`) and descriptive wildcards (`{userId}`, `{productId}`) are used throughout."
+  }
+}

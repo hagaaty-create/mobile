@@ -1,0 +1,168 @@
+/**
+ * Firestore Security Rules for the Mobile Store Application.
+ *
+ * Core Philosophy:
+ * This ruleset implements a strict user-ownership model combined with a decoupled 
+ * administrative role system. It prioritizes "Authorization Independence" by using 
+ * a dedicated collection for administrator lookups, ensuring that role checks are 
+ * atomic and performant.
+ *
+ * Data Structure:
+ * - /users/{userId}: Private user profiles, accessible only by the owner.
+ * - /admin_roles/{adminId}: A read-only collection (for rules) used to identify administrators.
+ * - /products & /banners: Publicly viewable marketing and catalog data; admin-only writes.
+ * - /reviews: Publicly viewable social proof; owner-only writes.
+ * - /users/{userId}/... (cart, orders, notifications): Nested user data trees ensuring 
+ *   strict path-based privacy and simplified listing logic.
+ *
+ * Key Security Decisions:
+ * - Admin Authorization: Instead of reading the 'role' field on a user document (which 
+ *   creates a dependency), we use an 'exists' check on the /admin_roles collection.
+ * - Prototyping Flexibility: Rules enforce WHO can write and WHAT relational links 
+ *   must be maintained (e.g., userId consistency), but do not restrict the specific 
+ *   shape or types of content fields to allow for rapid UI iteration.
+ * - Relational Integrity: On creation, we force documents to include the correct 
+ *   owner IDs that match the authenticated user or the path.
+ */
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+
+    /** @description Checks if the request is from an authenticated user. */
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    /** @description Checks if the authenticated user's UID matches the provided ID. */
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    /** @description Checks if the user exists in the admin_roles collection. */
+    function isAdmin() {
+      return isSignedIn() && exists(/databases/$(database)/documents/admin_roles/$(request.auth.uid));
+    }
+
+    /** @description Verifies that the document exists and the user is the owner (via data field). */
+    function isExistingDataOwner(ownerIdField) {
+      return isSignedIn() && resource != null && resource.data[ownerIdField] == request.auth.uid;
+    }
+
+    // --- Collection Rules ---
+
+    /**
+     * @description Rules for user profile documents.
+     * @path /users/{userId}
+     * @allow (create) if the user is creating their own document.
+     * @deny (read/write) if the user is not the owner of the profile.
+     * @principle Path-based ownership and self-creation.
+     */
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.id == userId;
+      allow update: if isOwner(userId) && resource != null;
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Read-only administrative role mapping.
+     * @path /admin_roles/{adminId}
+     * @allow (get) if authenticated to check admin status.
+     * @deny (write) all writes via client SDK; managed via backend.
+     * @principle Decoupled authorization lookup.
+     */
+    match /admin_roles/{adminId} {
+      allow get: if isSignedIn();
+      allow list: if isAdmin();
+      allow create, update, delete: if false;
+    }
+
+    /**
+     * @description Catalog of mobile products.
+     * @path /products/{productId}
+     * @allow (read) for everyone to browse.
+     * @deny (write) if the user is not an administrator.
+     * @principle Public read with role-restricted writes.
+     */
+    match /products/{productId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description User-generated reviews for products.
+     * @path /reviews/{reviewId}
+     * @allow (create) if authenticated and the userId field matches the auth UID.
+     * @deny (update/delete) if the user is not the original author of the review.
+     * @principle Public read with owner-only writes.
+     */
+    match /reviews/{reviewId} {
+      allow get, list: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isExistingDataOwner('userId');
+      allow delete: if isExistingDataOwner('userId');
+    }
+
+    /**
+     * @description User's shopping cart document.
+     * @path /users/{userId}/cart/cart
+     * @allow (all) for the owner of the parent user path.
+     * @deny (all) for any other user.
+     * @principle Path-based privacy for user sub-resources.
+     */
+    match /users/{userId}/cart/{cartId} {
+      allow get, list: if isOwner(userId);
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if isOwner(userId) && resource != null;
+      allow delete: if isOwner(userId) && resource != null;
+    }
+
+    /**
+     * @description Order history for users.
+     * @path /users/{userId}/orders/{orderId}
+     * @allow (create) for the user to place an order.
+     * @allow (update) for administrators to update status (e.g., 'shipped').
+     * @principle Ownership for creation and reading; role-based update.
+     */
+    match /users/{userId}/orders/{orderId} {
+      allow get, list: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && request.resource.data.userId == userId;
+      allow update: if (isOwner(userId) || isAdmin()) && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description Promotional banners for the homepage.
+     * @path /banners/{bannerId}
+     * @allow (read) for everyone.
+     * @deny (write) for non-admins.
+     * @principle Public read with role-restricted writes.
+     */
+    match /banners/{bannerId} {
+      allow get, list: if true;
+      allow create: if isAdmin();
+      allow update: if isAdmin() && resource != null;
+      allow delete: if isAdmin() && resource != null;
+    }
+
+    /**
+     * @description User-specific notifications.
+     * @path /users/{userId}/notifications/{notificationId}
+     * @allow (read/update) for the receiving user to view and mark as read.
+     * @deny (create) for standard users; typically handled by backend.
+     * @principle Private notification stream.
+     */
+    match /users/{userId}/notifications/{notificationId} {
+      allow get, list: if isOwner(userId);
+      allow update: if isOwner(userId) && resource != null;
+      allow create: if isAdmin(); // Assuming admin or backend creates notifications
+      allow delete: if isOwner(userId) && resource != null;
+    }
+  }
+}
