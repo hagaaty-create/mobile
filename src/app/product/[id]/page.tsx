@@ -1,14 +1,21 @@
+
+'use client';
+
 import Image from 'next/image';
-import { notFound } from 'next/navigation';
+import { notFound, useParams } from 'next/navigation';
 import { Star, ShieldCheck, Truck, RotateCcw, Cpu, Smartphone, Camera, Battery, Zap } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { PRODUCTS } from '@/lib/mock-data';
 import { ReviewSummarizer } from '@/components/product/ReviewSummarizer';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { useCart } from '@/hooks/use-cart';
 
-export default function ProductPage({ params }: { params: { id: string } }) {
-  const product = PRODUCTS.find(p => p.id === params.id);
+export default function ProductPage() {
+  const params = useParams();
+  const id = params?.id as string;
+  const product = PRODUCTS.find(p => p.id === id);
+  const { addToCart } = useCart();
 
   if (!product) {
     notFound();
@@ -76,29 +83,33 @@ export default function ProductPage({ params }: { params: { id: string } }) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button size="lg" className="h-14 px-10 text-lg bg-primary hover:bg-primary/90 flex-1">
-              Add to Shopping Cart
+            <Button 
+              size="lg" 
+              className="h-14 px-10 text-lg bg-primary hover:bg-primary/90 flex-1"
+              onClick={() => addToCart(product)}
+            >
+              إضافة إلى سلة المشتريات
             </Button>
             <Button size="lg" variant="outline" className="h-14 px-6 border-primary/20">
-              Wishlist
+              المفضلة
             </Button>
           </div>
 
           <Separator className="bg-border/50" />
 
           {/* Benefits */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-right" dir="rtl">
             <div className="flex items-center gap-3">
               <Truck className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">Free Delivery</span>
+              <span className="text-sm font-medium">توصيل مجاني</span>
             </div>
             <div className="flex items-center gap-3">
               <ShieldCheck className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">2-Year Warranty</span>
+              <span className="text-sm font-medium">ضمان سنتين</span>
             </div>
             <div className="flex items-center gap-3">
               <RotateCcw className="w-5 h-5 text-primary" />
-              <span className="text-sm font-medium">30-Day Returns</span>
+              <span className="text-sm font-medium">إرجاع خلال 30 يوم</span>
             </div>
           </div>
         </div>
@@ -106,7 +117,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
       {/* Specifications Grid */}
       <section className="mt-24">
-        <h2 className="font-headline text-3xl font-bold mb-10">Technical <span className="text-primary">Specifications</span></h2>
+        <h2 className="font-headline text-3xl font-bold mb-10">المواصفات <span className="text-primary">التقنية</span></h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6">
           {specs.map((spec, i) => (
             <div key={i} className="bg-card p-6 rounded-2xl border border-primary/10 flex flex-col items-center text-center space-y-3">
@@ -120,7 +131,7 @@ export default function ProductPage({ params }: { params: { id: string } }) {
 
       {/* AI Review Summary Section */}
       <section className="mt-24 space-y-10">
-        <h2 className="font-headline text-3xl font-bold">User <span className="text-primary">Reviews</span></h2>
+        <h2 className="font-headline text-3xl font-bold">مراجعات <span className="text-primary">المستخدمين</span></h2>
         <ReviewSummarizer productName={product.name} reviews={mockReviews} />
       </section>
     </div>
