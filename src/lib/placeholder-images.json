@@ -1,3 +1,40 @@
 {
-  "placeholderImages": []
+  "placeholderImages": [
+    {
+      "id": "hero-1",
+      "description": "Premium flagship smartphone glowing in dark background",
+      "imageUrl": "https://picsum.photos/seed/tech1/1200/600",
+      "imageHint": "smartphone technology"
+    },
+    {
+      "id": "hero-2",
+      "description": "Futuristic mobile device with sleek violet lighting",
+      "imageUrl": "https://picsum.photos/seed/tech2/1200/600",
+      "imageHint": "futuristic smartphone"
+    },
+    {
+      "id": "iphone-15-pro",
+      "description": "Titanium iPhone 15 Pro",
+      "imageUrl": "https://picsum.photos/seed/iphone15/800/800",
+      "imageHint": "iphone smartphone"
+    },
+    {
+      "id": "s24-ultra",
+      "description": "Samsung Galaxy S24 Ultra",
+      "imageUrl": "https://picsum.photos/seed/s24/800/800",
+      "imageHint": "samsung galaxy"
+    },
+    {
+      "id": "pixel-8",
+      "description": "Google Pixel 8 Pro",
+      "imageUrl": "https://picsum.photos/seed/pixel8/800/800",
+      "imageHint": "google pixel"
+    },
+    {
+      "id": "banner-promo",
+      "description": "Promotional banner for mobile accessories",
+      "imageUrl": "https://picsum.photos/seed/promo/800/400",
+      "imageHint": "tech accessories"
+    }
+  ]
 }
