@@ -1,3 +1,4 @@
+
 "use client"
 
 import Image from 'next/image';
@@ -6,12 +7,15 @@ import { Star, ShoppingCart, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { type Product } from '@/lib/mock-data';
+import { useCart } from '@/hooks/use-cart';
 
 interface ProductCardProps {
   product: Product;
 }
 
 export function ProductCard({ product }: ProductCardProps) {
+  const { addToCart } = useCart();
+
   return (
     <div className="group relative bg-card rounded-xl border border-border/50 overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(111,42,237,0.15)]">
       <Link href={`/product/${product.id}`}>
@@ -62,9 +66,12 @@ export function ProductCard({ product }: ProductCardProps) {
         </div>
 
         <div className="pt-2 flex gap-2">
-          <Button className="w-full bg-primary hover:bg-primary/90 rounded-lg gap-2 h-9 text-xs">
+          <Button 
+            onClick={() => addToCart(product)}
+            className="w-full bg-primary hover:bg-primary/90 rounded-lg gap-2 h-9 text-xs"
+          >
             <ShoppingCart className="w-3.5 h-3.5" />
-            Add to Cart
+            إضافة للسلة
           </Button>
         </div>
       </div>

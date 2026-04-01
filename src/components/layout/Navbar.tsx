@@ -1,3 +1,4 @@
+
 "use client"
 
 import Link from 'next/link';
@@ -14,10 +15,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Badge } from '@/components/ui/badge';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { useState } from 'react';
+import { useCart } from '@/hooks/use-cart';
+import { useUser } from '@/firebase';
 
 export function Navbar() {
-  const [cartCount, setCartCount] = useState(2);
+  const { items } = useCart();
+  const { user } = useUser();
+  const cartCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <nav className="sticky top-0 z-50 w-full glass-morphism border-b px-4 md:px-8 h-16 flex items-center justify-between">
@@ -66,13 +70,21 @@ export function Navbar() {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-56 glass-morphism">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {user ? `مرحباً، ${user.displayName || 'مستخدم'}` : 'حسابي'}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Profile</DropdownMenuItem>
-              <DropdownMenuItem>Orders</DropdownMenuItem>
-              <DropdownMenuItem>Wishlist</DropdownMenuItem>
+              <DropdownMenuItem>الملف الشخصي</DropdownMenuItem>
+              <DropdownMenuItem>الطلبات</DropdownMenuItem>
+              <DropdownMenuItem>المفضلة</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem className="text-destructive">Log out</DropdownMenuItem>
+              {user ? (
+                <DropdownMenuItem className="text-destructive">تسجيل الخروج</DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem asChild>
+                  <Link href="/login">تسجيل الدخول</Link>
+                </DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
 
