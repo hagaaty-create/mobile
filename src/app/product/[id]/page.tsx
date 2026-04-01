@@ -1,21 +1,26 @@
 
-'use client';
-
 import Image from 'next/image';
-import { notFound, useParams } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { Star, ShieldCheck, Truck, RotateCcw, Cpu, Smartphone, Camera, Battery, Zap } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { PRODUCTS } from '@/lib/mock-data';
 import { ReviewSummarizer } from '@/components/product/ReviewSummarizer';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
-import { useCart } from '@/hooks/use-cart';
+import { ProductActions } from '@/components/product/ProductActions';
 
-export default function ProductPage() {
-  const params = useParams();
-  const id = params?.id as string;
-  const product = PRODUCTS.find(p => p.id === id);
-  const { addToCart } = useCart();
+/**
+ * دالة ضرورية لـ Next.js عند استخدام التصدير الثابت.
+ * تقوم بتعريف جميع المعرفات (IDs) الممكنة للمنتجات ليتم بناؤها مسبقاً.
+ */
+export async function generateStaticParams() {
+  return PRODUCTS.map((product) => ({
+    id: product.id,
+  }));
+}
+
+export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = await params;
+  const product = PRODUCTS.find(p => p.id === resolvedParams.id);
 
   if (!product) {
     notFound();
@@ -82,18 +87,7 @@ export default function ProductPage() {
             )}
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg" 
-              className="h-14 px-10 text-lg bg-primary hover:bg-primary/90 flex-1"
-              onClick={() => addToCart(product)}
-            >
-              إضافة إلى سلة المشتريات
-            </Button>
-            <Button size="lg" variant="outline" className="h-14 px-6 border-primary/20">
-              المفضلة
-            </Button>
-          </div>
+          <ProductActions product={product} />
 
           <Separator className="bg-border/50" />
 
