@@ -49,7 +49,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-8">
+    <div className="container mx-auto py-12 px-4 md:px-8" dir="rtl">
       <h1 className="font-headline text-4xl font-black mb-12">سلة <span className="text-primary">المشتريات</span></h1>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -93,7 +93,7 @@ export default function CartPage() {
         </div>
 
         <div className="bg-card border rounded-3xl p-8 h-fit space-y-6">
-          <h2 className="font-headline text-2xl font-bold">ملخص الطلب</h2>
+          <h2 className="font-headline text-2xl font-bold">ملخص السلة</h2>
           <div className="space-y-4 text-sm">
             <div className="flex justify-between">
               <span className="text-muted-foreground">المجموع الفرعي</span>
@@ -109,8 +109,10 @@ export default function CartPage() {
               <span>${totalPrice}</span>
             </div>
           </div>
-          <Button className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 rounded-xl">
-            إتمام الشراء <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
+          <Button asChild className="w-full h-14 text-lg font-bold bg-primary hover:bg-primary/90 rounded-xl">
+            <Link href="/checkout">
+              متابعة للدفع <ArrowRight className="mr-2 w-5 h-5 rotate-180" />
+            </Link>
           </Button>
           <p className="text-xs text-muted-foreground text-center">
             تطبق الشروط والأحكام. التوصيل خلال 24 ساعة.
