@@ -1,24 +1,37 @@
-# TechVault Mobiles - Release Instructions
+# TechVault Mobiles - Release & Signing Instructions
 
-Congratulations! Your Android App Bundle (.aab) has been successfully built.
+لقد تم تهيئة تطبيقك الآن لدعم التوقيع التلقائي (App Signing) ليكون جاهزاً للرفع مباشرة على متجر جوجل بلاي.
 
-## How to download your build
-1. Go to the **Actions** tab in this repository.
-2. Click on the latest successful workflow run.
-3. Scroll down to the **Artifacts** section.
-4. Click on `app-release` to download the zip file.
-5. Extract the zip to get your `app-release.aab` file.
+## الخطوة الأخيرة: إعداد مفاتيح التوقيع
 
-## How to upload to Google Play Store
-1. Log in to your [Google Play Console](https://play.google.com/console).
-2. Select your app or create a new one.
-3. Navigate to **Release > Production**.
-4. Click **Create new release**.
-5. Upload the `.aab` file you downloaded.
-6. Follow the on-screen instructions to complete the store listing and rollout.
+بما أن المفاتيح سرية، يجب عليك إضافتها في حسابك على GitHub يدوياً باتباع الخطوات التالية:
 
-## App Signing
-This build is a standard release bundle. If you haven't configured a Keystore yet, Google Play App Signing will handle the distribution key for you upon the first upload.
+### 1. إنشاء مفتاح التوقيع (إذا لم يكن لديك واحد)
+افتح التيرمينال واكتب هذا الأمر (سيطلب منك كلمة مرور):
+```bash
+keytool -genkey -v -keystore release-key.jks -keyalg RSA -keysize 2048 -validity 10000 -alias my-key-alias
+```
+
+### 2. تحويل المفتاح إلى نص (Base64)
+لإضافته إلى GitHub، قم بتحويل ملف الـ `.jks` الذي نتج عن الخطوة السابقة إلى نص:
+```bash
+base64 -w 0 release-key.jks > keystore_base64.txt
+```
+انسخ محتوى ملف `keystore_base64.txt`.
+
+### 3. إضافة الأسرار إلى GitHub (Secrets)
+اذهب إلى مستودع الكود الخاص بك في GitHub، ثم اذهب إلى **Settings > Secrets and variables > Actions**، وأضف الـ Secrets التالية:
+- `ANDROID_KEYSTORE_BASE64`: الصق النص الذي نسخته من ملف `keystore_base64.txt`.
+- `ANDROID_KEYSTORE_PASSWORD`: كلمة المرور التي اخترتها للملف.
+- `ANDROID_KEY_ALIAS`: الاسم المستعار (مثلاً `my-key-alias`).
+- `ANDROID_KEY_PASSWORD`: كلمة المرور الخاصة بالـ Alias (غالباً هي نفسها كلمة مرور الملف).
 
 ---
-Built with Firebase Studio.
+
+## كيف ترفع التطبيق بعد البناء؟
+1. بعد كل `push` للكود، سيقوم GitHub ببناء ملف `.aab` موقع (Signed).
+2. حمل الملف من تبويب **Actions** في GitHub تحت قسم **Artifacts**.
+3. ارفع ملف الـ `.aab` مباشرة إلى **Google Play Console**.
+
+---
+تم الإعداد بواسطة Firebase Studio.
