@@ -1,3 +1,4 @@
+
 name: Build Android App (Signed)
 
 on:
@@ -32,10 +33,7 @@ jobs:
           cache: 'gradle'
 
       - name: Sync Capacitor
-        run: |
-          npx cap sync android
-          # إظهار هيكلية الملفات للتأكد من وجود المكتبات في حال الفشل
-          ls -R node_modules/@capacitor/android/capacitor/ || echo "Capacitor android path not found"
+        run: npx cap sync android
 
       - name: Decode Keystore
         run: |

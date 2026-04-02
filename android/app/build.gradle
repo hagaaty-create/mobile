@@ -1,40 +1,30 @@
-// ملف بناء تطبيق الأندرويد - الإعدادات الخاصة بالتطبيق
+
 apply plugin: 'com.android.application'
 
 android {
     namespace "com.techvault.store"
-    compileSdk project.ext.compileSdkVersion
-
+    compileSdk 35
+    
     defaultConfig {
         applicationId "com.techvault.store"
-        minSdk project.ext.minSdkVersion
-        targetSdk project.ext.targetSdkVersion
+        minSdk 24
+        targetSdk 35
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnit4"
+        
         aaptOptions {
-             // إعدادات لتقليل حجم الصور أثناء البناء
-             cruncherEnabled = false
+             namespaced false
         }
     }
-
-    signingConfigs {
-        release {
-            storeFile file('release-key.jks')
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "123456"
-            keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: "techvault-key"
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: "123456"
-        }
-    }
-
+    
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
-
+    
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
@@ -49,19 +39,24 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$project.ext.androidxAppCompatVersion"
-    implementation "androidx.core:core-ktx:$project.ext.androidxCoreVersion"
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
+    implementation 'androidx.core:core-splashscreen:1.0.1'
+    
+    // ربط مكتبة كاباسيتور مباشرة
     implementation project(':capacitor-android')
-    testImplementation "junit:junit:$project.ext.junitVersion"
-    androidTestImplementation "androidx.test.ext:junit:$project.ext.androidxJunitVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.androidxEspressoCoreVersion"
+    
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
 
+// محاولة تطبيق إعدادات كاباسيتور الإضافية إذا وجدت
 try {
-    def servicesConfig = file('google-services.json')
-    if (servicesConfig.exists()) {
-        apply plugin: 'com.google.gms.google-services'
+    def capBuildGradle = file('capacitor.build.gradle')
+    if (capBuildGradle.exists()) {
+        apply from: 'capacitor.build.gradle'
     }
 } catch (Exception e) {
-    logger.warn("google-services.json not found, skipping plugin application.")
+    logger.warn("capacitor.build.gradle not found, skipping")
 }

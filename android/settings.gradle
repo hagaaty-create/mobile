@@ -1,20 +1,20 @@
-// سكريبت إعدادات الأندرويد لربط كاباسيتور والمكتبات
-rootProject.name = 'android'
 
 include ':app'
 
-// تحديد مسار ملف إعدادات كاباسيتور بشكل ديناميكي ومضمون
+// تحديد مسار node_modules بشكل مطلق بالنسبة لمجلد المشروع
 def nodeModulesDir = new File(settingsDir, '../node_modules')
-def capacitorSettingsFile = new File(nodeModulesDir, '@capacitor/android/capacitor/capacitor.settings.gradle')
 
-if (capacitorSettingsFile.exists()) {
-    apply from: capacitorSettingsFile
+// ربط مكتبة كاباسيتور الأساسية يدوياً لضمان وجودها
+def capacitorAndroidDir = new File(nodeModulesDir, '@capacitor/android/capacitor')
+if (capacitorAndroidDir.exists()) {
+    include ':capacitor-android'
+    project(':capacitor-android').projectDir = capacitorAndroidDir
 } else {
-    // محاولة البحث في مسار بديل لبيئة GitHub
-    def alternativePath = new File(settingsDir, '../../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle')
-    if (alternativePath.exists()) {
-        apply from: alternativePath
-    } else {
-        println "WARNING: capacitor.settings.gradle not found. Trying to proceed without it, but this might fail."
-    }
+    throw new GradleException("Could not find capacitor-android at: " + capacitorAndroidDir.absolutePath + ". Please run 'npm install'.")
+}
+
+// ربط ملف إعدادات المكونات الإضافية (Plugins)
+def capSettingsFile = new File(nodeModulesDir, '@capacitor/android/capacitor/capacitor.settings.gradle')
+if (capSettingsFile.exists()) {
+    apply from: capSettingsFile
 }
