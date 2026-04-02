@@ -1,31 +1,36 @@
 
-# مبروك! لقد أنشأت مفتاح التوقيع بنجاح 🚀
+# مبروك! لقد قمت بإنشاء مفتاح التوقيع بنجاح 🚀
 
-بناءً على ما يظهر في التيرمينال، ملف `release-key.jks` موجود الآن في مجلد مشروعك. اتبع هذه الخطوات النهائية لرفع التطبيق:
+اتبع هذه الخطوات بالترتيب لرفع تطبيقك بشكل آمن:
 
-## الخطوة 1: تحويل المفتاح إلى نص (Base64)
-نفذ هذا الأمر في التيرمينال الآن:
-```bash
-npm run export-keystore
-```
-سيظهر لك ملف جديد باسم `keystore_base64.txt`. افتحه وانسخ كل النص الموجود بداخله.
+## الخطوة 1: إضافة البيانات إلى GitHub Secrets
+من الصورة التي أرسلتها، اتبع هذه الخطوات في متصفحك:
+1. اذهب لتبويب **Settings** (موجود في أعلى صفحة المستودع).
+2. في القائمة الجانبية اليسرى، انزل لقسم "Security" واضغط على **Secrets and variables**.
+3. اضغط على **Actions**.
+4. اضغط على الزر الأخضر **New repository secret**.
 
-## الخطوة 2: إضافة البيانات إلى GitHub Secrets
-اذهب لمستودع الكود في GitHub، ثم **Settings > Secrets and variables > Actions**، وأضف 4 أسرار (Secrets) جديدة:
+أضف الأسرار الأربعة التالية:
 
-1. `ANDROID_KEYSTORE_BASE64`: الصق النص الذي نسخته من `keystore_base64.txt`.
-2. `ANDROID_KEYSTORE_PASSWORD`: اكتب `123456`.
-3. `ANDROID_KEY_ALIAS`: اكتب `techvault-key`.
-4. `ANDROID_KEY_PASSWORD`: اكتب `123456`.
+| الاسم (Name) | القيمة (Value) |
+| :--- | :--- |
+| `ANDROID_KEYSTORE_BASE64` | الصق النص الطويل الموجود في ملف `keystore_base64.txt` |
+| `ANDROID_KEYSTORE_PASSWORD` | `123456` |
+| `ANDROID_KEY_ALIAS` | `techvault-key` |
+| `ANDROID_KEY_PASSWORD` | `123456` |
 
-## الخطوة 3: رفع الكود (Push)
-بمجرد إضافة الـ Secrets، قم برفع الكود:
+## الخطوة 2: رفع الكود (Push)
+بمجرد إضافة الأسرار، ارجع للتيرمينال هنا وارفع الكود:
 ```bash
 git add .
-git commit -m "Final: Added keystore configuration"
+git commit -m "Final: Ready for signed build"
 git push origin main
 ```
 
-سيقوم GitHub الآن ببناء نسخة `.aab` موقعة تلقائياً. ستجدها في تبويب **Actions** عند انتهاء البناء.
+## الخطوة 3: تحميل التطبيق الموقع
+1. اذهب لتبويب **Actions** في GitHub.
+2. ستجد بناءً جديداً بدأ تلقائياً. انتظر حتى يكتمل (يظهر باللون الأخضر).
+3. اضغط على اسم البناء، وانزل لأسفل الصفحة (قسم Artifacts) وحمل ملف `app-release`.
+4. فك الضغط وستجد ملف الـ `.aab` جاهزاً للرفع على Google Play Console.
 
 تم الإعداد بنجاح بواسطة TechVault AI Assistant.
