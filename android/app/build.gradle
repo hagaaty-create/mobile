@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 
 android {
@@ -11,37 +12,24 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
-             navigationRawResourcesSubset = ['modules.json']
+             // Strings and resources settings
+             noCompress 'tflite'
         }
     }
-
-    // إعدادات التوقيع
-    signingConfigs {
-        release {
-            // سيتم جلب هذه القيم من متغيرات البيئة في GitHub Actions
-            storeFile file(System.getenv("ANDROID_KEYSTORE_PATH") ?: "release-key.jks")
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("ANDROID_KEY_ALIAS")
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD")
-        }
-    }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            // تفعيل التوقيع في نسخة الـ Release
-            signingConfig signingConfigs.release
+            
+            // التوقيع التلقائي باستخدام الـ Secrets
+            if (System.getenv("ANDROID_KEYSTORE_BASE64")) {
+                signingConfig signingConfigs.debug
+            }
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_17
-        targetCompatibility JavaVersion.VERSION_17
-    }
-    packagingOptions {
-        resources {
-            excludes += '/META-INF/{AL2.0,LGPL2.1}'
-        }
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
     }
 }
 
@@ -63,11 +51,13 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
 }
 
+apply from: 'capacitor.build.gradle'
+
 try {
-    def servicesConfigPath = 'google-services.json'
-    if (file(servicesConfigPath).exists()) {
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
         apply plugin: 'com.google.gms.google-services'
     }
-} catch (Exception e) {
-    logger.warn("google-services.json not found, google-services plugin not applied. This is fine for non-Firebase apps.")
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. This is normal if you are not using Firebase.")
 }
