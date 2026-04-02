@@ -1,12 +1,24 @@
-
+// سكريبت ديناميكي للبحث عن مكتبة Capacitor Android وربطها بالمشروع
 include ':app'
 
-// نقوم بتعريف مسار مكتبة كاباسيتور يدوياً لضمان العثور عليها في بيئة GitHub
-def capacitorAndroidPath = new File(settingsDir, '../node_modules/@capacitor/android/capacitor')
-if (capacitorAndroidPath.exists()) {
+// ربط مكتبة Capacitor Android يدوياً من مجلد node_modules
+def capacitorAndroidPath = '../node_modules/@capacitor/android/capacitor'
+def capacitorAndroidDir = new File(settingsDir, capacitorAndroidPath)
+
+if (capacitorAndroidDir.exists()) {
     include ':capacitor-android'
-    project(':capacitor-android').projectDir = capacitorAndroidPath
+    project(':capacitor-android').projectDir = capacitorAndroidDir
+} else {
+    // محاولة البحث في المسار البديل (أحياناً يختلف المسار حسب إصدار npm)
+    def altPath = '../../node_modules/@capacitor/android/capacitor'
+    def altDir = new File(settingsDir, altPath)
+    if (altDir.exists()) {
+        include ':capacitor-android'
+        project(':capacitor-android').projectDir = altDir
+    } else {
+        println "WARNING: Capacitor Android project directory not found at ${capacitorAndroidDir.absolutePath}"
+    }
 }
 
-// المزامنة التلقائية مع إضافات كاباسيتور
-apply from: 'capacitor.settings.gradle'
+// إضافة أي بلجنز إضافية يتم توليدها بواسطة كاباسيتور
+apply from: '../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle'
