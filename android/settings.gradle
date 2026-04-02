@@ -1,6 +1,2 @@
-
+// تم تبسيط الملف لإزالة المشاريع غير الموجودة التي تسبب خطأ في البناء
 include ':app'
-include ':capacitor-android'
-project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
-
-// إذا كان هناك إضافات كوردوفا مستقبلاً سيتم إضافتها هنا تلقائياً عبر cap sync
