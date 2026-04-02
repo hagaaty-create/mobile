@@ -1,3 +1,4 @@
+
 apply plugin: 'com.android.application'
 
 android {
@@ -13,8 +14,19 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
-             // إعدادات اختيارية لضغط الموارد
-             noCompress 'foo', 'bar'
+             // Avoid encoding IDN for colors
+             noCompress 'png'
+        }
+    }
+
+    signingConfigs {
+        release {
+            if (System.getenv("ANDROID_KEYSTORE_PATH") != null) {
+                storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
         }
     }
 
@@ -22,17 +34,18 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            
-            // التوقيع التلقائي إذا كانت البيانات متوفرة
-            if (System.getenv("ANDROID_KEYSTORE_PATH") != null) {
-                signingConfig signingConfigs.debug
-            }
+            signingConfig signingConfigs.release
         }
     }
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
+    }
+
+    // إزالة الخاصية المسببة للخطأ navigationRawResourcesSubset
+    androidResources {
+        noCompress 'png'
     }
 }
 
@@ -44,22 +57,27 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$appcompatVersion"
-    implementation "androidx.core:core-ktx:$coreKtxVersion"
-    implementation "com.google.android.material:material:$materialVersion"
-    implementation "androidx.constraintlayout:constraintlayout:$constraintsLayoutVersion"
-    implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
+    implementation "androidx.appcompat:appcompat:$appcompat_version"
+    implementation "androidx.core:core-ktx:$core_version"
+    implementation "com.google.android.material:material:$material_version"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
     
-    // الربط بمشروع Capacitor
+    // ربط مشروع كاباسيتور الأساسي
     implementation project(':capacitor-android')
 
-    testImplementation "junit:junit:$junitVersion"
-    androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    testImplementation "junit:junit:$junit_version"
+    androidTestImplementation "androidx.test.ext:junit:$androidx_junit_version"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
+
+    implementation "androidx.core:core-splashscreen:1.0.1"
 }
 
-// محاولة استدعاء ملف البلجنز إذا وجد، مع تجنب الخطأ إذا كان مفقوداً
-def capacitorBuildFile = file("capacitor.build.gradle")
-if (capacitorBuildFile.exists()) {
-    apply from: "capacitor.build.gradle"
+// محاولة تطبيق إعدادات كاباسيتور إذا كانت موجودة
+try {
+    def capacitorBuildGradle = "../node_modules/@capacitor/android/capacitor/capacitor.build.gradle"
+    if (file(capacitorBuildGradle).exists()) {
+        apply from: capacitorBuildGradle
+    }
+} catch (Exception e) {
+    println "Warning: Could not apply capacitor.build.gradle: ${e.message}"
 }

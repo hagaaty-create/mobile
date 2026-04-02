@@ -1,24 +1,21 @@
-// سكريبت ديناميكي للبحث عن مكتبة Capacitor Android وربطها بالمشروع
+
+rootProject.name = 'android'
+
 include ':app'
 
-// ربط مكتبة Capacitor Android يدوياً من مجلد node_modules
-def capacitorAndroidPath = '../node_modules/@capacitor/android/capacitor'
-def capacitorAndroidDir = new File(settingsDir, capacitorAndroidPath)
+// استيراد إعدادات كاباسيتور بشكل دايناميكي وقوي
+def capacitorAndroidPath = "../node_modules/@capacitor/android/capacitor"
+def capacitorSettings = new File(settingsDir, "${capacitorAndroidPath}/capacitor.settings.gradle")
 
-if (capacitorAndroidDir.exists()) {
-    include ':capacitor-android'
-    project(':capacitor-android').projectDir = capacitorAndroidDir
+if (capacitorSettings.exists()) {
+    apply from: capacitorSettings
 } else {
-    // محاولة البحث في المسار البديل (أحياناً يختلف المسار حسب إصدار npm)
-    def altPath = '../../node_modules/@capacitor/android/capacitor'
-    def altDir = new File(settingsDir, altPath)
-    if (altDir.exists()) {
-        include ':capacitor-android'
-        project(':capacitor-android').projectDir = altDir
+    // محاولة البحث في مسار بديل إذا فشل الأول (لضمان المرونة في بيئات CI)
+    def fallbackPath = "../../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle"
+    def fallbackSettings = new File(settingsDir, fallbackPath)
+    if (fallbackSettings.exists()) {
+        apply from: fallbackSettings
     } else {
-        println "WARNING: Capacitor Android project directory not found at ${capacitorAndroidDir.absolutePath}"
+        throw new GradleException("Could not find capacitor.settings.gradle. Please run 'npm install' and 'npx cap sync'.")
     }
 }
-
-// إضافة أي بلجنز إضافية يتم توليدها بواسطة كاباسيتور
-apply from: '../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle'
