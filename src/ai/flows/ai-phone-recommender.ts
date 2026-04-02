@@ -1,4 +1,3 @@
-'use server';
 /**
  * @fileOverview An AI assistant flow for recommending mobile phones based on user preferences.
  *

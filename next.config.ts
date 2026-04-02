@@ -1,7 +1,6 @@
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
-  /* إعدادات التصدير الثابت الضرورية لتطبيقات الموبايل */
   output: 'export',
   typescript: {
     ignoreBuildErrors: true,
@@ -10,7 +9,7 @@ const nextConfig: NextConfig = {
     ignoreDuringBuilds: true,
   },
   images: {
-    unoptimized: true, // ضروري لأن التصدير الثابت لا يدعم معالجة الصور التلقائية
+    unoptimized: true,
     remotePatterns: [
       {
         protocol: 'https',
