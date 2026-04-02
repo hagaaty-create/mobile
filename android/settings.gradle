@@ -1,2 +1,5 @@
+
 include ':app'
-// تأكد من عدم وجود include لأي إضافات غير موجودة في المجلدات
+include ':capacitor-android'
+
+project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
