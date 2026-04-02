@@ -1,3 +1,4 @@
+
 name: Build Android App
 
 on:
@@ -36,6 +37,7 @@ jobs:
       - name: Build Android AAB
         run: |
           cd android
+          chmod +x gradlew || true
           gradle bundleRelease
           
       - name: Upload AAB

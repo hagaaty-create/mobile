@@ -1,1 +1,6 @@
+
 include ':app'
+
+// ربط مكتبة Capacitor الأساسية من مجلد node_modules
+include ':capacitor-android'
+project(':capacitor-android').projectDir = new File('../node_modules/@capacitor/android/capacitor')
