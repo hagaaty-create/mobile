@@ -10,7 +10,8 @@
     "build": "next build",
     "static-export": "next build && npx cap sync",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "export-keystore": "base64 -w 0 release-key.jks > keystore_base64.txt"
   },
   "dependencies": {
     "@capacitor/android": "^7.0.0",
