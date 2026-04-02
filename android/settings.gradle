@@ -1,4 +1,12 @@
 
 include ':app'
-include ':capacitor-android'
-include ':capacitor-cordova-android-plugins'
+
+// Explicitly defining the path to Capacitor Android library in node_modules
+project(':capacitor-android').projectDir = new File(rootProject.projectDir, '../node_modules/@capacitor/android/android')
+
+// Include any native plugins if they exist (handled by capacitor.settings.gradle)
+try {
+    apply from: 'capacitor.settings.gradle'
+} catch (Exception e) {
+    logger.warn("capacitor.settings.gradle not found. Run 'npx cap sync' to generate it.")
+}
