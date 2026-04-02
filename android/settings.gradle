@@ -1,9 +1,15 @@
-// تم تبسيط هذا الملف لضمان الربط المباشر والصحيح لمكتبات Capacitor
 include ':app'
 
-// ربط مكتبة Capacitor Android الأساسية بشكل صريح ومباشر
-include ':capacitor-android'
-project(':capacitor-android').projectDir = new File(rootProject.projectDir, '../node_modules/@capacitor/android/capacitor')
-
-// استيراد إعدادات الإضافات (Plugins) من كاباسيتور
-apply from: '../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle'
+// Capacitor ربط صريح ومباشر لمكتبة 
+def capacitorSettingsFile = file('../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle')
+if (capacitorSettingsFile.exists()) {
+    apply from: capacitorSettingsFile
+} else {
+    // في حال كانت المسارات مختلفة في بيئة السيرفر
+    def alternativePath = file('../../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle')
+    if (alternativePath.exists()) {
+        apply from: alternativePath
+    } else {
+        throw new GradleException("Could not find capacitor.settings.gradle. Please ensure npm install and npx cap sync have run.")
+    }
+}

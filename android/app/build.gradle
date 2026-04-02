@@ -2,23 +2,29 @@ apply plugin: 'com.android.application'
 
 android {
     namespace "com.techvault.store"
-    compileSdk 35
+    compileSdk rootProject.ext.compileSdkVersion
     
     defaultConfig {
         applicationId "com.techvault.store"
-        minSdk 23
-        targetSdk 35
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        aaptOptions {
+             // Strings.xml إزالة القيود عن أسماء الموارد لضمان عدم تعارض الـ 
+             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:f..:!CVS:!thumbs.db:!picasa.ini:!*~'
+        }
     }
 
     signingConfigs {
         release {
-            storeFile file('release-key.jks')
-            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "123456"
-            keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: "techvault-key"
-            keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: "123456"
+            if (System.getenv("ANDROID_KEYSTORE_PATH") != null) {
+                storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
+                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
+                keyAlias System.getenv("ANDROID_KEY_ALIAS")
+                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
+            }
         }
     }
 
@@ -44,25 +50,20 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:1.6.1"
-    implementation "androidx.core:core-splashscreen:1.0.1"
-    
-    // الربط مع مشروع كاباسيتور الأساسي
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.androidxAppCompatVersion"
+    implementation "androidx.core:core-splashscreen:$rootProject.ext.coreSplashScreenVersion"
     implementation project(':capacitor-android')
     
-    testImplementation "junit:junit:4.13.2"
-    androidTestImplementation "androidx.test.ext:junit:1.1.5"
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.5.1"
+    testImplementation "junit:junit:$rootProject.ext.junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.ext.androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.androidxEspressoCoreVersion"
 }
 
-// استيراد إعدادات بناء الإضافات
 try {
     def servicesJSON = file('google-services.json')
     if (servicesJSON.text) {
         apply plugin: 'com.google.gms.google-services'
     }
 } catch(Exception e) {
-    logger.info("google-services.json not found, skipping Google Services plugin")
+    logger.info("google-services.json not found, google-services plugin not applied. This is normal if you haven't added Firebase yet.")
 }
-
-apply from: 'capacitor.build.gradle'
