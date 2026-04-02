@@ -1,8 +1,10 @@
+
 import type {Metadata} from 'next';
 import './globals.css';
 import { Navbar } from '@/components/layout/Navbar';
 import { Toaster } from '@/components/ui/toaster';
 import { FirebaseClientProvider } from '@/firebase';
+import Link from 'next/link';
 
 export const metadata: Metadata = {
   title: 'TechVault Mobiles | Elite Smartphone Store',
@@ -50,7 +52,7 @@ export default function RootLayout({
                   <li>Order Tracking</li>
                   <li>Return Policy</li>
                   <li>Warranty Information</li>
-                  <li>Technical Support</li>
+                  <li><Link href="/privacy" className="hover:underline text-primary">Privacy Policy</Link></li>
                 </ul>
               </div>
               <div>
