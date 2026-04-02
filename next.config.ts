@@ -1,18 +1,38 @@
+
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
-  distDir: 'out', // إجبار المجلد على أن يكون out دائماً
+  distDir: 'out',
   typescript: {
-    // تجاهل أخطاء الـ TypeScript تماماً لضمان اكتمال البناء
     ignoreBuildErrors: true,
   },
   eslint: {
-    // تجاهل أخطاء الـ ESLint تماماً
     ignoreDuringBuilds: true,
   },
   images: {
     unoptimized: true,
+  },
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      // تجاهل ملفات النظام الخاصة بـ Node.js التي تسبب خطأ في المتصفح/الموبايل
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        tls: false,
+        net: false,
+        child_process: false,
+        dns: false,
+        crypto: false,
+        os: false,
+        path: false,
+        stream: false,
+        http: false,
+        https: false,
+        zlib: false,
+      };
+    }
+    return config;
   },
 };
 
