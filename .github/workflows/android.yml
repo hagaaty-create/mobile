@@ -18,24 +18,21 @@ jobs:
       - name: Install dependencies
         run: npm install --legacy-peer-deps
         
-      - name: Build Next.js
-        # تشغيل البناء بشكل طبيعي الآن بعد إصلاح الإعدادات
+      - name: Build Next.js Static Export
         run: npm run build
         
       - name: Ensure Out Directory
-        # للتأكد من وجود المجلد قبل المزامنة
         run: |
           if [ ! -d "out" ]; then mkdir out; fi
           if [ ! -f "out/index.html" ]; then echo "<html><body>Build Fallback</body></html>" > out/index.html; fi
-          ls -la out
         
       - name: Capacitor Sync
         run: npx cap sync
         
-      - name: Set up JDK 17
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'temurin'
           
       - name: Setup Gradle
