@@ -2,12 +2,13 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   output: 'export',
+  distDir: 'out', // إجبار المجلد على أن يكون out دائماً
   typescript: {
-    // تجاهل أخطاء الـ TypeScript أثناء البناء لضمان استكمال العملية
+    // تجاهل أخطاء الـ TypeScript تماماً لضمان اكتمال البناء
     ignoreBuildErrors: true,
   },
   eslint: {
-    // تجاهل أخطاء الـ ESLint أثناء البناء
+    // تجاهل أخطاء الـ ESLint تماماً
     ignoreDuringBuilds: true,
   },
   images: {
