@@ -1,9 +1,7 @@
-
 "use client"
 
-import Image from 'next/image';
 import Link from 'next/link';
-import { Star, ShoppingCart, Heart } from 'lucide-react';
+import { Star, ShoppingCart, Heart, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { type Product } from '@/lib/mock-data';
@@ -19,14 +17,8 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative bg-card rounded-xl border border-border/50 overflow-hidden hover:border-primary/50 transition-all duration-300 hover:shadow-[0_0_20px_rgba(111,42,237,0.15)]">
       <Link href={`/product/${product.id}`}>
-        <div className="relative aspect-square overflow-hidden bg-white/5">
-          <Image 
-            src={product.image}
-            alt={product.name}
-            fill
-            className="object-cover group-hover:scale-105 transition-transform duration-500"
-            data-ai-hint="smartphone product"
-          />
+        <div className="relative aspect-square overflow-hidden bg-white/5 flex items-center justify-center">
+          <Smartphone className="w-20 h-20 text-muted-foreground/30 group-hover:scale-110 transition-transform duration-500" />
           {product.discount && (
             <Badge className="absolute top-3 left-3 bg-destructive text-white font-bold">
               -{product.discount}%

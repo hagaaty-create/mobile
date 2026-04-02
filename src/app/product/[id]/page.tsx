@@ -1,17 +1,11 @@
-
-import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { Star, ShieldCheck, Truck, RotateCcw, Cpu, Smartphone, Camera, Battery, Zap } from 'lucide-react';
+import { Star, ShieldCheck, Truck, RotateCcw, Cpu, Smartphone, Camera, Battery, Zap, Package } from 'lucide-react';
 import { PRODUCTS } from '@/lib/mock-data';
 import { ReviewSummarizer } from '@/components/product/ReviewSummarizer';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { ProductActions } from '@/components/product/ProductActions';
 
-/**
- * دالة ضرورية لـ Next.js عند استخدام التصدير الثابت.
- * تقوم بتعريف جميع المعرفات (IDs) الممكنة للمنتجات ليتم بناؤها مسبقاً.
- */
 export async function generateStaticParams() {
   return PRODUCTS.map((product) => ({
     id: product.id,
@@ -26,7 +20,6 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
     notFound();
   }
 
-  // Mock reviews for the summarizer
   const mockReviews = [
     { userName: "Alex J.", rating: 5, title: "Pure Excellence", comment: "The display is incredible. Everything is so smooth. The battery easily lasts a full day and then some." },
     { userName: "Sarah M.", rating: 4, title: "Great but expensive", comment: "I love the build quality, but the price is really steep compared to the previous model." },
@@ -45,21 +38,15 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
   return (
     <div className="container mx-auto py-12 px-4 md:px-8">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
-        {/* Gallery */}
+        {/* Visual Placeholder */}
         <div className="space-y-6">
-          <div className="relative aspect-square rounded-3xl overflow-hidden bg-card border border-primary/10">
-            <Image 
-              src={product.image}
-              alt={product.name}
-              fill
-              className="object-cover"
-              priority
-            />
+          <div className="relative aspect-square rounded-3xl overflow-hidden bg-card border border-primary/10 flex items-center justify-center">
+            <Smartphone className="w-40 h-40 text-primary/20" />
           </div>
           <div className="grid grid-cols-4 gap-4">
             {[1, 2, 3, 4].map((i) => (
-              <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-border hover:border-primary cursor-pointer transition-colors">
-                <Image src={`https://picsum.photos/seed/phone${i}/400/400`} alt="Gallery" fill className="object-cover" />
+              <div key={i} className="relative aspect-square rounded-xl overflow-hidden border border-border flex items-center justify-center bg-white/5">
+                <Package className="w-6 h-6 text-muted-foreground/30" />
               </div>
             ))}
           </div>

@@ -1,6 +1,5 @@
 import Link from 'next/link';
-import Image from 'next/image';
-import { ArrowRight, Cpu, Sparkles, ShieldCheck, Zap } from 'lucide-react';
+import { ArrowRight, Cpu, Sparkles, ShieldCheck, Zap, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ProductCard } from '@/components/product/ProductCard';
 import { PRODUCTS } from '@/lib/mock-data';
@@ -11,19 +10,7 @@ export default function Home() {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center justify-center overflow-hidden py-20 px-4">
-        <div className="absolute inset-0 z-0">
-          <Image 
-            src="https://picsum.photos/seed/hero-tech/1920/1080"
-            alt="Hero Background"
-            fill
-            className="object-cover opacity-30 grayscale"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background" />
-          <div className="absolute inset-0 bg-radial-gradient from-primary/20 to-transparent" />
-        </div>
-
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden py-20 px-4 bg-gradient-to-br from-primary/10 via-background to-accent/5">
         <div className="relative z-10 max-w-5xl mx-auto text-center space-y-8">
           <Badge className="bg-primary/20 text-primary border-primary/30 px-4 py-1.5 text-sm mb-4 animate-pulse">
             New Arrivals: iPhone 15 Series & Galaxy S24

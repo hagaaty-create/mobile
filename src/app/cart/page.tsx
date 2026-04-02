@@ -1,11 +1,9 @@
-
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { useCart } from '@/hooks/use-cart';
 import { Button } from '@/components/ui/button';
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight } from 'lucide-react';
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Smartphone } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { useUser } from '@/firebase';
 
@@ -56,13 +54,13 @@ export default function CartPage() {
         <div className="lg:col-span-2 space-y-6">
           {items.map((item) => (
             <div key={item.id} className="flex gap-6 p-4 bg-card border rounded-2xl items-center">
-              <div className="relative w-24 h-24 bg-background rounded-xl overflow-hidden shrink-0">
-                <Image src={item.image} alt={item.name} fill className="object-cover" />
+              <div className="relative w-24 h-24 bg-background rounded-xl overflow-hidden shrink-0 flex items-center justify-center">
+                <Smartphone className="w-10 h-10 text-muted-foreground/30" />
               </div>
               
               <div className="flex-1 space-y-1">
-                <h3 className="font-headline font-bold text-lg">{item.name}</h3>
-                <p className="text-primary font-bold text-xl">${item.price}</p>
+                <h3 className="font-headline font-bold text-lg text-right">{item.name}</h3>
+                <p className="text-primary font-bold text-xl text-right">${item.price}</p>
               </div>
 
               <div className="flex flex-col items-center gap-2">
