@@ -1,21 +1,19 @@
-
 apply plugin: 'com.android.application'
 
 android {
     namespace "com.techvault.store"
-    compileSdk 35
-
+    compileSdk rootProject.ext.compileSdkVersion
+    
     defaultConfig {
         applicationId "com.techvault.store"
-        minSdk 23
-        targetSdk 35
+        minSdk rootProject.ext.minSdkVersion
+        targetSdk rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
-             // Avoid encoding IDN for colors
-             noCompress 'png'
+             // Strings and other resources are added dynamically by Capacitor
+             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
 
@@ -42,11 +40,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_21
         targetCompatibility JavaVersion.VERSION_21
     }
-
-    // إزالة الخاصية المسببة للخطأ navigationRawResourcesSubset
-    androidResources {
-        noCompress 'png'
-    }
 }
 
 repositories {
@@ -57,27 +50,21 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$appcompat_version"
-    implementation "androidx.core:core-ktx:$core_version"
-    implementation "com.google.android.material:material:$material_version"
-    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout_version"
-    
-    // ربط مشروع كاباسيتور الأساسي
+    implementation "androidx.appcompat:appcompat:$rootProject.ext.androidxAppCompatVersion"
+    implementation "androidx.core:core-ktx:$rootProject.ext.androidxCoreVersion"
     implementation project(':capacitor-android')
-
-    testImplementation "junit:junit:$junit_version"
-    androidTestImplementation "androidx.test.ext:junit:$androidx_junit_version"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$espresso_version"
-
     implementation "androidx.core:core-splashscreen:1.0.1"
+
+    testImplementation "junit:junit:$rootProject.ext.junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$rootProject.ext.androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.androidxEspressoCoreVersion"
 }
 
-// محاولة تطبيق إعدادات كاباسيتور إذا كانت موجودة
 try {
-    def capacitorBuildGradle = "../node_modules/@capacitor/android/capacitor/capacitor.build.gradle"
-    if (file(capacitorBuildGradle).exists()) {
-        apply from: capacitorBuildGradle
+    def servicesJSON = file('google-services.json')
+    if (servicesJSON.text) {
+        apply plugin: 'com.google.gms.google-services'
     }
-} catch (Exception e) {
-    println "Warning: Could not apply capacitor.build.gradle: ${e.message}"
+} catch(Exception e) {
+    logger.info("google-services.json not found, google-services plugin not applied. This is fine if you're not using Firebase Services.")
 }

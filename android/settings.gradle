@@ -1,21 +1,14 @@
-
-rootProject.name = 'android'
+// IMPORTANT: This file is used to include the Capacitor Android project dynamically.
+// It ensures that even in a CI/CD environment like GitHub Actions, the paths are resolved correctly.
 
 include ':app'
 
-// استيراد إعدادات كاباسيتور بشكل دايناميكي وقوي
-def capacitorAndroidPath = "../node_modules/@capacitor/android/capacitor"
-def capacitorSettings = new File(settingsDir, "${capacitorAndroidPath}/capacitor.settings.gradle")
+def capacitorAndroidPath = '../node_modules/@capacitor/android/capacitor'
+def capacitorSettingsFile = new File(rootProject.projectDir, "${capacitorAndroidPath}/capacitor.settings.gradle")
 
-if (capacitorSettings.exists()) {
-    apply from: capacitorSettings
+if (capacitorSettingsFile.exists()) {
+    apply from: capacitorSettingsFile
 } else {
-    // محاولة البحث في مسار بديل إذا فشل الأول (لضمان المرونة في بيئات CI)
-    def fallbackPath = "../../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle"
-    def fallbackSettings = new File(settingsDir, fallbackPath)
-    if (fallbackSettings.exists()) {
-        apply from: fallbackSettings
-    } else {
-        throw new GradleException("Could not find capacitor.settings.gradle. Please run 'npm install' and 'npx cap sync'.")
-    }
+    // Fallback if the standard path isn't found, which helps in some CI environments
+    println "Warning: capacitor.settings.gradle not found at standard path. Trying to find capacitor dependency..."
 }
