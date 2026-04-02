@@ -1,4 +1,3 @@
-
 import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
@@ -15,7 +14,6 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
-      // تجاهل ملفات النظام الخاصة بـ Node.js التي تسبب خطأ في المتصفح/الموبايل
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,
