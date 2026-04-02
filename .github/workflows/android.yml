@@ -34,7 +34,6 @@ jobs:
           distribution: 'temurin'
 
       - name: Decode Keystore
-        id: decode_keystore
         if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > android/app/release-key.jks
