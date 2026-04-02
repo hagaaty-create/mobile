@@ -32,10 +32,12 @@ jobs:
           cache: 'gradle'
 
       - name: Sync Capacitor
-        run: npx cap sync android
+        run: |
+          npx cap sync android
+          # إظهار هيكلية الملفات للتأكد من وجود المكتبات في حال الفشل
+          ls -R node_modules/@capacitor/android/capacitor/ || echo "Capacitor android path not found"
 
       - name: Decode Keystore
-        if: env.ANDROID_KEYSTORE_BASE64 != ''
         run: |
           echo $ANDROID_KEYSTORE_BASE64 | base64 --decode > android/app/release-key.jks
         env:
@@ -50,7 +52,6 @@ jobs:
           chmod +x gradlew
           ./gradlew bundleRelease
         env:
-          ANDROID_KEYSTORE_PATH: "release-key.jks"
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}

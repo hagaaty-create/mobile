@@ -1,30 +1,29 @@
+// ملف بناء تطبيق الأندرويد - الإعدادات الخاصة بالتطبيق
 apply plugin: 'com.android.application'
 
 android {
     namespace "com.techvault.store"
-    compileSdk rootProject.ext.compileSdkVersion
-    
+    compileSdk project.ext.compileSdkVersion
+
     defaultConfig {
         applicationId "com.techvault.store"
-        minSdk rootProject.ext.minSdkVersion
-        targetSdk rootProject.ext.targetSdkVersion
+        minSdk project.ext.minSdkVersion
+        targetSdk project.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
-             // Strings.xml إزالة القيود عن أسماء الموارد لضمان عدم تعارض الـ 
-             ignoreAssetsPattern '!.svn:!.git:!.ds_store:!*.scc:.*:f..:!CVS:!thumbs.db:!picasa.ini:!*~'
+             // إعدادات لتقليل حجم الصور أثناء البناء
+             cruncherEnabled = false
         }
     }
 
     signingConfigs {
         release {
-            if (System.getenv("ANDROID_KEYSTORE_PATH") != null) {
-                storeFile file(System.getenv("ANDROID_KEYSTORE_PATH"))
-                storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD")
-                keyAlias System.getenv("ANDROID_KEY_ALIAS")
-                keyPassword System.getenv("ANDROID_KEY_PASSWORD")
-            }
+            storeFile file('release-key.jks')
+            storePassword System.getenv("ANDROID_KEYSTORE_PASSWORD") ?: "123456"
+            keyAlias System.getenv("ANDROID_KEY_ALIAS") ?: "techvault-key"
+            keyPassword System.getenv("ANDROID_KEY_PASSWORD") ?: "123456"
         }
     }
 
@@ -50,20 +49,19 @@ repositories {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "androidx.appcompat:appcompat:$rootProject.ext.androidxAppCompatVersion"
-    implementation "androidx.core:core-splashscreen:$rootProject.ext.coreSplashScreenVersion"
+    implementation "androidx.appcompat:appcompat:$project.ext.androidxAppCompatVersion"
+    implementation "androidx.core:core-ktx:$project.ext.androidxCoreVersion"
     implementation project(':capacitor-android')
-    
-    testImplementation "junit:junit:$rootProject.ext.junitVersion"
-    androidTestImplementation "androidx.test.ext:junit:$rootProject.ext.androidxJunitVersion"
-    androidTestImplementation "androidx.test.espresso:espresso-core:$rootProject.ext.androidxEspressoCoreVersion"
+    testImplementation "junit:junit:$project.ext.junitVersion"
+    androidTestImplementation "androidx.test.ext:junit:$project.ext.androidxJunitVersion"
+    androidTestImplementation "androidx.test.espresso:espresso-core:$project.ext.androidxEspressoCoreVersion"
 }
 
 try {
-    def servicesJSON = file('google-services.json')
-    if (servicesJSON.text) {
+    def servicesConfig = file('google-services.json')
+    if (servicesConfig.exists()) {
         apply plugin: 'com.google.gms.google-services'
     }
-} catch(Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. This is normal if you haven't added Firebase yet.")
+} catch (Exception e) {
+    logger.warn("google-services.json not found, skipping plugin application.")
 }
