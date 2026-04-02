@@ -1,3 +1,2 @@
 include ':app'
-include ':capacitor-android'
-// Remove any references to non-existent capacitor-cordova-android-plugins
+// تأكد من عدم وجود include لأي إضافات غير موجودة في المجلدات

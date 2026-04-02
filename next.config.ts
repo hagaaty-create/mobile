@@ -14,6 +14,7 @@ const nextConfig: NextConfig = {
   },
   webpack: (config, { isServer }) => {
     if (!isServer) {
+      // إجبار Webpack على تجاهل مكتبات السيرفر تماماً لمنع أخطاء البناء للأندرويد
       config.resolve.fallback = {
         ...config.resolve.fallback,
         fs: false,

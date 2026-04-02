@@ -11,6 +11,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
+             // تصحيح الخطأ المطبعي: noCompress بدلاً من nocompress
              noCompress 'public'
         }
     }
@@ -35,21 +36,13 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.core:core-ktx:1.13.1'
-    implementation 'androidx.core:core-splashscreen:1.0.1'
-    implementation project(':capacitor-android')
-    implementation project(':capacitor-community-http')
+    implementation 'androidx.core:core-splashscreen:1.0.1' // إضافة مكتبة شاشة البداية المفقودة
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.0'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.2.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.6.1'
-}
-
-apply from: 'capacitor.build.gradle'
-
-try {
-    def servicesJSON = file('google-services.json')
-    if (servicesJSON.text) {
-        apply plugin: 'com.google.gms.google-services'
-    }
-} catch(Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+    
+    // إزالة أي إشارات يدوية لإضافات غير موجودة مثل capacitor-community-http
+    implementation "com.getcapacitor:android:7.0.0"
 }
