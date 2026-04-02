@@ -1,14 +1,9 @@
-// IMPORTANT: This file is used to include the Capacitor Android project dynamically.
-// It ensures that even in a CI/CD environment like GitHub Actions, the paths are resolved correctly.
-
+// تم تبسيط هذا الملف لضمان الربط المباشر والصحيح لمكتبات Capacitor
 include ':app'
 
-def capacitorAndroidPath = '../node_modules/@capacitor/android/capacitor'
-def capacitorSettingsFile = new File(rootProject.projectDir, "${capacitorAndroidPath}/capacitor.settings.gradle")
+// ربط مكتبة Capacitor Android الأساسية بشكل صريح ومباشر
+include ':capacitor-android'
+project(':capacitor-android').projectDir = new File(rootProject.projectDir, '../node_modules/@capacitor/android/capacitor')
 
-if (capacitorSettingsFile.exists()) {
-    apply from: capacitorSettingsFile
-} else {
-    // Fallback if the standard path isn't found, which helps in some CI environments
-    println "Warning: capacitor.settings.gradle not found at standard path. Trying to find capacitor dependency..."
-}
+// استيراد إعدادات الإضافات (Plugins) من كاباسيتور
+apply from: '../node_modules/@capacitor/android/capacitor/capacitor.settings.gradle'
